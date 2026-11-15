@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ဝယ်လိုအားနှင့် ရောင်းလိုအား နှိုင်းယှဉ်ချက်</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="../css/demand-supply.css">
+</head>
+<body>
+
+<div class="container my-5 dashboard-wrapper">
+    <div class="custom-chart-card p-4 mb-4">
+        <div class="chart-header mb-4">
+            <h2 class="main-title">ဝယ်လိုအား နှင့် ရောင်းလိုအား</h2>
+            <p class="sub-title">လအလိုက် နှိုင်းယှဉ်ချက် (တန်ချိန် ထောင်ဂဏန်း)</p>
+        </div>
+        
+        <div class="chart-box">
+            <canvas id="demandSupplyChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/dashboard-view.js"></script>
+
+</body>
+</html>

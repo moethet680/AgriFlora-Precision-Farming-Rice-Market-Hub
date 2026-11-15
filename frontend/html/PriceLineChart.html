@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ဈေးနှုန်းလမ်းကြောင်း ပြသနာရီ</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="../css/PriceLineChart.css">
+</head>
+<body>
+
+    <div class="chart-card">
+        <h3>ဈေးနှုန်း လမ်းကြောင်း</h3>
+        <p class="muted">လက်ရှိဈေး နှင့် AI ခန့်မှန်းဈေး နှိုင်းယှဉ်ချက် (ကျပ်/အိတ်)</p>
+        
+        <div class="chart-container">
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/PriceLineChart.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof initPriceLineChart === "function") {
+                initPriceLineChart(1, 1); // ဆန်အမျိုးအစား ၁၊ ဒေသ ၁
+            } else {
+                console.error("PriceLineChart.js ဖိုင်ကို ရှာမတွေ့ပါ ငြိမ်း။");
+            }
+        });
+    </script>
+</body>
+</html>

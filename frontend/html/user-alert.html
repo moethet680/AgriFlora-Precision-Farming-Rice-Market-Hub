@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="my">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Notifications</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Padauk', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Mobile Card Container -->
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden my-6">
+
+        <!-- Top Header -->
+        <div class="bg-emerald-50 px-5 py-4 border-b border-emerald-100 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-emerald-600 text-lg">🔔</span>
+                <h1 class="text-base font-bold text-emerald-950">Market Notifications</h1>
+            </div>
+            <!-- Refresh Button (Green Theme) -->
+            <button onclick="loadNotifications()"
+                class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1 shadow-sm">
+                🔄 Refresh
+            </button>
+        </div>
+
+        <!-- Main Dynamic Content Container -->
+        <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+            <!-- Dynamic Notifications via JS (Data အတု ထည့်မထားပါ) -->
+            <div id="notificationContainer" class="space-y-3">
+                <div class="text-center py-8 text-slate-400 text-sm">
+                    အသိပေးချက်များ ရယူနေပါသည်...
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Action Button (Green Theme) -->
+        <div class="p-4 bg-slate-50 border-t border-slate-100">
+            <a href="index.html"
+                class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shadow-sm">
+                <span>←</span> ဇယားသို့ ပြန်လည်သွားမည်
+            </a>
+        </div>
+
+    </div>
+
+    <script src="../js/alert-ad.js"></script>
+</body>
+
+</html>

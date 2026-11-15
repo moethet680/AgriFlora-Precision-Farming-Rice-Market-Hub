@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="my">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Rice Price Entry</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CSS Style Section -->
+    <style>
+        body {
+            font-family: 'Padauk', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🌾</span>
+                <h1 class="text-xl font-bold text-slate-800">Rice Market Management (Admin)</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-slate-500">Welcome, Admin</span>
+                <div
+                    class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+                    A
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Section 1: Weekly Price Entry Form -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>➕</span> အပတ်စဉ် ဆန်ဈေးနှုန်းသစ် ထည့်သွင်းရန်
+            </h2>
+
+            <form id="priceEntryForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- ဆန်အမည် Input Field -->
+                <div>
+                    <label for="riceNameInput" class="block text-xs font-bold text-slate-700 mb-1">ဆန်အမည်</label>
+                    <input type="text" id="riceNameInput" placeholder="-" required
+                        class="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                </div>
+
+                <!-- Week Number Input -->
+                <div>
+                    <label for="weekNoInput" class="block text-sm font-medium text-slate-700 mb-1">အပတ်စဉ်
+                        (Week)</label>
+                    <input type="number" id="weekNoInput" placeholder="Week" min="1" max="52" required
+                        class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-800">
+                </div>
+
+                <!-- Price Input -->
+                <div class="flex-1">
+                    <label for="priceInput" class="block text-sm font-medium text-slate-700 mb-1">
+                        ဈေးနှုန်း (MMK / 24 ပြည်)
+                    </label>
+                    <input type="text" id="priceInput" inputmode="numeric" pattern="[0-9]*" placeholder="-" required
+                        class="w-full px-4 py-2.5 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-800 transition">
+                </div>
+
+                <!-- Date Input -->
+                <div>
+                    <label for="dateInput" class="block text-sm font-medium text-slate-700 mb-1">ရက်စွဲ</label>
+                    <input type="date" id="dateInput" required
+                        class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-800">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md:col-span-2 lg:col-span-4 flex justify-end mt-2">
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-sm flex items-center gap-2">
+                        <span>💾</span> ဈေးနှုန်း စာရင်းသွင်းမည်
+                    </button>
+                </div>
+            </form>
+        </section>
+
+
+        <!-- Section 2: Weekly Price Entries Table -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span>📊</span> Weekly Price Entries History
+                </h2>
+                <button onclick="loadPriceTable()"
+                    class="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                    🔄 Refresh Table
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-slate-500 text-sm font-semibold bg-slate-50">
+                            <th class="py-3 px-4">#</th>
+                            <th class="py-3 px-4">Rice Type</th>
+                            <th class="py-3 px-4">Week</th>
+                            <th class="py-3 px-4">Price (MMK)</th>
+                            <th class="py-3 px-4">Date</th>
+                            <th class="py-3 px-4 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <!-- Dynamic Table Body via JS -->
+                    <tbody id="priceTableBody" class="divide-y divide-slate-100 text-slate-700 text-sm font-medium">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+    <!-- Edit Price Modal Box -->
+    <div id="editModal"
+        class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden overflow-y-auto h-full w-full flex items-center justify-center z-50 transition-all">
+        <div class="relative p-6 border w-96 shadow-xl rounded-2xl bg-white">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                    ✏️ ဈေးနှုန်း ပြင်ဆင်ရန်
+                </h3>
+                <button onclick="closeEditModal()"
+                    class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
+            </div>
+
+            <form id="editForm" class="mt-4 space-y-3" onsubmit="submitEdit(event)">
+                <input type="hidden" id="editPriceId">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ဆန်အမည်</label>
+                    <input type="text" id="editRiceName"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">အပတ်စဉ် (Week)</label>
+                    <input type="number" id="editWeekNo"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ဈေးနှုန်း (MMK)</label>
+                    <input type="number" id="editPrice"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ရက်စွဲ</label>
+                    <input type="date" id="editRecordDate"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3">
+                    <button type="button" onclick="closeEditModal()"
+                        class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-200 transition">မလုပ်တော့ပါ</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-700 transition">ပြင်ဆင်မည်</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../js/alert-ad.js"></script>
+</body>
+
+</html>

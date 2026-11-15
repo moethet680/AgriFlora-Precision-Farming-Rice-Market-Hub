@@ -1,0 +1,49 @@
+/* frontend/css/demand-supply.css */
+
+body {
+    font-family: 'Noto Sans Myanmar', sans-serif;
+    background-color: #f1f3f4; /* ပုံထဲကအတိုင်း နူးညံ့သော မီးခိုးဖျော့ရောင် နောက်ခံ */
+    color: #333333;
+}
+
+.dashboard-wrapper {
+    max-width: 900px; /* Graph ကြီး ဖတ်ရလွယ်အောင် အကျယ်ကို ကန့်သတ်ပေးထားခြင်း */
+    margin: 0 auto;
+}
+
+/* ဒီဇိုင်းပုံစံအတိုင်း အနားကွေးပြီး အရိပ်ပါသော ကတ်ပြားစနစ် */
+.custom-chart-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.chart-header .main-title {
+    font-size: 19px;
+    font-weight: 500;
+    color: #202124;
+    margin-bottom: 4px;
+}
+
+.chart-header .sub-title {
+    font-size: 13.5px;
+    color: #5f6368;
+    margin-bottom: 0;
+}
+
+/* Canvas Size ကို ပုံမပျက်ဘဲ အလိုက်သင့် ချုံ့/ချဲ့ စေရန် */
+.chart-box {
+    position: relative;
+    height: 340px;
+    width: 100%;
+}
+
+/* Heat Map လာထည့်ရန် နေရာလွတ် ပုံစံဒီဇိုင်း */
+.heatmap-placeholder {
+    background-color: #f8f9fa;
+    border: 1px dashed #dadce0;
+    border-radius: 8px;
+    min-height: 250px;
+    font-size: 13px;
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="my">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>စပါးအမျိုးအစား အသေးစိတ် - RICE MARKET</title>
+    <link rel="stylesheet" href="../css/detail.css">
+</head>
+
+<body>
+
+    <div class="mobile-container">
+
+        <!-- Top Header -->
+        <header class="app-header">
+            <a href="rice-variety.html" class="back-link">←</a>
+            <h2 class="header-title">စပါးအမျိုးအစား အသေးစိတ်</h2>
+            <div></div>
+        </header>
+
+        <!-- Main Dynamic Content -->
+        <main class="app-content detail-content">
+
+            <!-- Rice Image & Profile Card -->
+            <div class="detail-card">
+                <div class="detail-img-box">
+                    <img id="rice-img" src="" alt="Rice Image">
+                </div>
+                <h2 id="rice-name" class="detail-rice-name">--</h2>
+                <span id="rice-badge" class="badge">--</span>
+                <p id="rice-desc" class="detail-desc">--</p>
+            </div>
+
+            <!-- Specifications Info Table -->
+            <div class="info-list">
+
+                <div class="info-item">
+                    <div class="info-icon">🏷</div>
+                    <div class="info-label">အမျိုးအစား</div>
+                    <div class="info-colon">:</div>
+                    <div id="info-type" class="info-value">--</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">💰</div>
+                    <div class="info-label">လက်ရှိပေါက်ဈေး</div>
+                    <div class="info-colon">:</div>
+                    <div id="info-price" class="info-value price-text">--</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div class="info-label">မူလထွက်ရှိရာဒေသ</div>
+                    <div class="info-colon">:</div>
+                    <div id="info-origin" class="info-value">--</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">🏙</div>
+                    <div class="info-label">အများဆုံးစိုက်ပျိုးရာဒေသ</div>
+                    <div class="info-colon">:</div>
+                    <div id="info-region" class="info-value">--</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">🌱</div>
+                    <div class="info-label">ဖြစ်ထွန်းမြေ</div>
+                    <div class="info-colon">:</div>
+                    <div id="info-soil" class="info-value">--</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">📅</div>
+                    <div class="info-label">ရိတ်သိမ်းရာသီ</div>
+                    <div class="info-colon">:</div>
+                    <div id="info-harvest" class="info-value">--</div>
+                </div>
+
+                <div class="info-item highlight-box">
+                    <div class="info-icon">📈</div>
+                    <div class="info-label">စိုက်သင့်မှုအကြံပြုချက်</div>
+                    <div class="info-colon">:</div>
+                    <div id="info-recommend" class="info-value recommend-text">--</div>
+                </div>
+
+                <!-- Planting Method Guidelines -->
+                <div class="guide-box">
+                    <div class="guide-header">
+                        <span class="info-icon">👨‍🌾</span>
+                        <span class="info-label" style="font-weight: 700; color: #14532d;">စိုက်ပျိုးနည်း</span>
+                    </div>
+                    <ul id="guide-list" class="guide-list"></ul>
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- Footer Back Action -->
+        <div class="detail-footer">
+            <a href="rice-variety.html" class="btn-back-action">
+                <span>←</span> ဇယားသို့ ပြန်လည်သွားမည်
+            </a>
+        </div>
+
+    </div><!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const riceId = urlParams.get('id');
+
+            if (!riceId) {
+                alert('ဆန်အမျိုးအစား ID မရှိပါ!');
+                return;
+            }
+
+            // Flask Backend မှ Data လှမ်းယူခြင်း
+            fetch(`http://127.0.0.1:5000/api/rice-varieties/${riceId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Data မတွေ့ရှိပါ');
+                    return response.json();
+                })
+                .then(data => {
+                    // ၁။ အခြေခံ အချက်အလက်များ ပြသခြင်း
+                    document.getElementById('rice-img').src = data.image || '../images/Pawsan.jpg';
+                    document.getElementById('rice-name').innerText = data.name || '--';
+                    document.getElementById('rice-badge').innerText = data.badge || 'Rice Variety 🌿';
+                    document.getElementById('rice-desc').innerText = data.description || '--';
+
+                    document.getElementById('info-type').innerText = data.type || data.name || '--';
+                    document.getElementById('info-price').innerText = data.price || '--';
+                    document.getElementById('info-origin').innerText = data.origin || '--';
+                    document.getElementById('info-region').innerText = data.mainRegion || data.main_region || '--';
+                    document.getElementById('info-soil').innerText = data.soil || '--';
+                    document.getElementById('info-harvest').innerText = data.harvest || '--';
+                    document.getElementById('info-recommend').innerText = data.recommendation || '--';
+
+                    // ၂။ Database ထဲက စိုက်ပျိုးနည်း (guide) ကို ဖတ်ပြီး ပြသခြင်း
+                    const guideListElem = document.getElementById('guide-list');
+                    if (guideListElem) {
+                        guideListElem.innerHTML = ''; // အဟောင်းများကို ရှင်းထုတ်မည်
+
+                        let guideSteps = [];
+
+                        // Backend မှ Array သို့မဟုတ် String ဖြင့် လာပါက ခွဲခြားစစ်ဆေးခြင်း
+                        if (Array.isArray(data.guide)) {
+                            guideSteps = data.guide;
+                        } else if (typeof data.guide === 'string' && data.guide.trim() !== '') {
+                            guideSteps = data.guide.split('\n');
+                        }
+
+                        // စိုက်ပျိုးနည်း အချက်အလက်များ ရှိပါက တစ်ကြောင်းစီ ထည့်သွင်းမည်
+                        if (guideSteps.length > 0) {
+                            guideSteps.forEach(step => {
+                                const trimmedStep = String(step).trim();
+                                if (trimmedStep !== '') {
+                                    const li = document.createElement('li');
+                                    li.innerText = trimmedStep;
+                                    guideListElem.appendChild(li);
+                                }
+                            });
+                        } else {
+                            guideListElem.innerHTML = '<li style="list-style: none; color: #888;">စိုက်ပျိုးနည်း အချက်အလက်များ မရှိသေးပါ။</li>';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching detail:', error);
+                });
+        });
+    </script>
+
+</body>
+
+</html>

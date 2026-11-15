@@ -1,0 +1,40 @@
+/* frontend/css/styles.css */
+
+body {
+    font-family: 'Padauk', sans-serif;
+    background-color: #427A4B; /* ပုံထဲကအတိုင်း အစိမ်းရောင် နောက်ခံ */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.chart-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.chart-card h3 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    color: #1a1a1a;
+    font-weight: 700;
+}
+
+.chart-card .muted {
+    margin: 0 0 20px 0;
+    font-size: 13px;
+    color: #666666;
+}
+
+.chart-container {
+    position: relative;
+    height: 240px;
+    width: 100%;
+}

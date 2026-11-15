@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="my">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ဆန်ဈေးကွက် ခန့်မှန်းစနစ်</title>
+  <meta name="theme-color" content="#3a7d44" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    body,
+    html {
+      background-color: #427A4B !important;
+      /* Login screen နှင့် တူညီသော အစိမ်းရောင် */
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Padauk', sans-serif;
+    }
+
+    .app {
+      background-color: #427A4B !important;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 75px;
+      /* Bottom Tabbar မကွယ်အောင် အောက်ခြေနေရာချန်ခြင်း */
+    }
+
+    .appbar {
+      background-color: #ffffff;
+      /* Header ကို အဖြူရောင်အတိုင်း ထားရှိခြင်း */
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* Chart များ သပ်သပ်ရပ်ရပ် ပေါ်စေရန် Wrapper Container */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 240px;
+      margin-top: 10px;
+    }
+
+    .alert-msg {
+      background-color: #fee2e2;
+      color: #991b1b;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .alert-msg.success {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    /* TabBar အမြဲ အောက်ခြေမှာ တည်ရှိနေစေရန် */
+    .tabbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    /* Heatmap Styling Section */
+    .heatmap-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 15px;
+    }
+
+    .heatmap-iframe {
+      width: 100%;
+      height: 520px;
+      border: none;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .heatmap-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .heatmap-table th,
+    .heatmap-table td {
+      padding: 10px 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .heatmap-table th {
+      background-color: #f3f4f6;
+      color: #1f2937;
+      font-weight: bold;
+    }
+
+    /* Heatmap Color Intensity Levels */
+    .heat-low {
+      background-color: #dcfce7;
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    /* ဈေးနည်း/အေး */
+    .heat-mid {
+      background-color: #fef08a;
+      color: #a16207;
+      font-weight: bold;
+    }
+
+    /* ပုံမှန် */
+    .heat-high {
+      background-color: #fed7aa;
+      color: #c2410c;
+      font-weight: bold;
+    }
+
+    /* ဈေးတက် */
+    .heat-vhigh {
+      background-color: #fca5a5;
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    /* ဈေး အလွန်မြင့် */
+
+    .heatmap-legend {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e5e7eb;
+      font-size: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-box {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 1. LOGIN & REGISTER SCREEN -->
+  <section id="loginScreen" class="login">
+    <div class="login__brand">
+      <div class="logo">🌾</div>
+      <h1>ဆန်ဈေးကွက် ခန့်မှန်းစနစ်</h1>
+      <p>မြန်မာ့လယ်သမားများနှင့် ကုန်သည်များအတွက် AI ဈေးနှုန်းခန့်မှန်းစနစ်</p>
+    </div>
+
+    <div class="card login__card">
+      <div id="authAlert" class="alert-msg" style="display: none;"></div>
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm" class="space-y-4">
+        <h2>ဝင်ရောက်ရန်</h2>
+        <label for="phone">Ph နံပါတ်</label>
+        <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="09xxxxxxxx" autocomplete="username"
+          required />
+
+        <label for="password">စကားဝှက်</label>
+        <input id="password" name="password" type="password" placeholder="စကားဝှက်" autocomplete="current-password"
+          required />
+
+        <button type="submit" class="btn btn--primary btn--block">ဝင်ရောက်မည်</button>
+
+        <p class="hint" style="text-align: center; margin-top: 15px;">
+          အကောင့်မရှိသေးပါက? <a href="#" id="goToRegister"
+            style="color: #3a7d44; font-weight: bold; text-decoration: underline;">ဒီမှာအကောင့်ဖွင့်ပါ</a>
+        </p>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="registerForm" class="space-y-4" style="display: none;">
+        <h2>အကောင့်အသစ်ဖွင့်ရန်</h2>
+
+        <label for="reg_name">ဦးကြီးအမည်</label>
+        <input id="reg_name" name="name" type="text" placeholder="ဦးစံထွန်း" required />
+
+        <label for="reg_phone">ဖုန်းနံပါတ်</label>
+        <input id="reg_phone" name="phone" type="tel" inputmode="tel" placeholder="09xxxxxxxx" required />
+
+        <label for="reg_password">စကားဝှက်အသစ်</label>
+        <input id="reg_password" name="password" type="password" placeholder="စကားဝှက်" required />
+
+        <button type="submit" class="btn btn--primary btn--block"
+          style="background-color: #16a34a;">အကောင့်အသစ်ဆောက်မည်</button>
+
+        <p class="hint" style="text-align: center; margin-top: 15px;">
+          အကောင့်ရှိပြီးသားဖြစ်ပါက? <a href="#" id="goToLogin"
+            style="color: #3a7d44; font-weight: bold; text-decoration: underline;">ဒီမှာအကောင့်ပြန်ဝင်ပါ</a>
+        </p>
+      </form>
+    </div>
+
+    <p class="login__feasibility">
+      Mobile First · Offline Support · Low-cost Deployment
+    </p>
+  </section>
+
+  <!-- 2. MAIN APP DASHBOARD -->
+  <div id="app" class="app" hidden>
+    <header class="appbar">
+      <div class="appbar__left">
+        <span class="logo logo--sm">🌾</span>
+        <div>
+          <strong id="viewTitle">ဒက်ရှ်ဘုတ်</strong>
+          <small>👤 အသုံးပြုသူ - <span id="userName" style="color: #c2410c; font-weight: bold;">-</span></small>
+        </div>
+      </div>
+      <div class="appbar__right">
+        <button id="offlineToggle" class="chip" title="Offline Mode">
+          <span class="dot dot--online"></span><span id="offlineLabel">Online</span>
+        </button>
+        <button id="logoutBtn" class="chip" style="background-color: #ef4444; color: white;">ထွက်မည်</button>
+      </div>
+    </header>
+
+    <div class="filters">
+      <label>
+        ဆန်အမျိုးအစား
+        <select id="varietySelect">
+          <option value="အားလုံး" selected>ဆန်အမျိုးအစား (အားလုံး)</option>
+          <option value="ပေါ်ဆန်းမွှေး">ပေါ်ဆန်းမွှေး</option>
+          <option value="ဧရာမင်း">ဧရာမင်း</option>
+          <option value="မနောသုခ">မနောသုခ</option>
+          <option value="ဆင်းသုခ">ဆင်းသုခ</option>
+          <option value="ရွှေဘိုပေါ်ဆန်း">ရွှေဘိုပေါ်ဆန်း</option>
+          <option value="ဖျာပုံပေါ်ဆန်း">ဖျာပုံပေါ်ဆန်း</option>
+          <option value="ဧမထ">ဧမထ</option>
+        </select>
+      </label>
+
+      <label>
+        ဒေသ
+        <select id="regionSelect">
+          <option value="အားလုံး" selected>တိုင်းဒေသကြီး (အားလုံး)</option>
+          <option value="ဧရာဝတီတိုင်းဒေသကြီး">ဧရာဝတီတိုင်းဒေသကြီး</option>
+          <option value="ပဲခူးတိုင်းဒေသကြီး">ပဲခူးတိုင်းဒေသကြီး</option>
+          <option value="စစ်ကိုင်းတိုင်းဒေသကြီး">စစ်ကိုင်းတိုင်းဒေသကြီး</option>
+          <option value="မန္တလေးတိုင်းဒေသကြီး">မန္တလေးတိုင်းဒေသကြီး</option>
+          <option value="ရန်ကုန်တိုင်းဒေသကြီး">ရန်ကုန်တိုင်းဒေသကြီး</option>
+          <option value="မကွေးတိုင်းဒေသကြီး">မကွေးတိုင်းဒေသကြီး</option>
+          <option value="တနင်္သာရီတိုင်းဒေသကြီး">တနင်္သာရီတိုင်းဒေသကြီး</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="syncBanner" class="sync-banner" hidden>
+      <span id="syncText"></span>
+      <button id="syncBtn" class="btn btn--sm">Sync လုပ်မည်</button>
+    </div>
+
+    <main class="content">
+      <!-- Dashboard View -->
+      <section id="view-dashboard" class="view">
+        <div id="kpiGrid" class="kpi-grid"></div>
+
+        <div class="card">
+          <h3>ဈေးနှုန်း လမ်းကြောင်း — လက်ရှိ vs AI ခန့်မှန်းချက်</h3>
+          <p class="muted">Line Chart · ပြီးခဲ့သည့်လများ + ခန့်မှန်း ၃ လ</p>
+          <div class="chart-container">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>ဝယ်လိုအား နှင့် ရောင်းလိုအား</h3>
+          <p class="subtitle">Bar Chart · Demand vs Supply Trend</p>
+
+          <div style="position: relative; height: 260px; width: 100%;">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+
+        <!-- 🗺️ HEATMAP CARD COMPONENT -->
+        <div class="card">
+          <h3>🗺️ တိုင်းနှင့်ပြည်နယ်အလိုက် ဈေးနှုန်း အပူချိန်ပြပုံ (Heatmap)</h3>
+          <!-- relative path သို့ ပြောင်းထားပါသည် -->
+          <iframe id="heatmapFrame" src="html/heatmap.html" class="heatmap-iframe"></iframe>
+
+        </div>
+      </section>
+
+      <!-- Collect View -->
+      <section id="view-collect" class="view" hidden>
+        <div class="card">
+          <h3>ဈေးနှုန်း မှတ်တမ်းတင်ခြင်း</h3>
+          <p class="muted">ဈေးကွက်ဈေးနှုန်းအသစ်ကို ဤနေရာတွင် ဖြည့်သွင်းပါ</p>
+
+          <form id="priceForm" class="form-grid">
+            <label>ဆန်အမျိုးအစား
+              <select id="c_variety" required>
+                <option value="">-- ရွေးချယ်ပါ --</option>
+                <option value="ပေါ်ဆန်းမွှေး">ပေါ်ဆန်းမွှေး</option>
+                <option value="ဧည့်မထ">ဧည့်မထ</option>
+                <option value="ရွှေဘိုပေါ်ဆန်း">ရွှေဘိုပေါ်ဆန်း</option>
+                <option value="ဧရာမင်း">ဧရာမင်း</option>
+              </select>
+            </label>
+            <label>ဒေသ
+              <select id="c_region" required>
+                <option value="">-- ရွေးချယ်ပါ --</option>
+                <option value="မန္တလေး">မန္တလေး</option>
+                <option value="ရန်ကုန်">ရန်ကုန်</option>
+                <option value="ဧရာဝတီ">ဧရာဝတီ</option>
+                <option value="စစ်ကိုင်း">စစ်ကိုင်း</option>
+              </select>
+            </label>
+            <label>ဈေးနှုန်း (ကျပ်/အိတ်)
+              <input id="c_price" type="number" min="0" step="100" required />
+            </label>
+            <label>ရက်စွဲ<input id="c_date" type="date" required /></label>
+            <button type="submit" class="btn btn--primary btn--block">မှတ်တမ်းတင်မည်</button>
+          </form>
+          <p id="collectMsg" class="ok" hidden></p>
+        </div>
+
+        <div class="card">
+          <h3>လတ်တလော မှတ်တမ်းများ</h3>
+          <div class="table-wrap">
+            <table id="priceTable">
+              <thead>
+                <tr>
+                  <th>ဆန်</th>
+                  <th>ဒေသ</th>
+                  <th>ဈေး (ကျပ်)</th>
+                  <th>ရက်စွဲ</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Forecast View -->
+      <section id="view-forecast" class="view" hidden>
+        <div class="card forecast-summary" id="forecastSummary"></div>
+        <div class="card">
+          <h3>AI ခန့်မှန်းချက် အသေးစိတ်</h3>
+          <p class="muted">Polynomial Regression (scikit-learn) ဖြင့် တွက်ချက်ထားသည်</p>
+          <div class="chart-container">
+            <canvas id="forecastChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alerts View -->
+      <section id="view-alerts" class="view" hidden>
+        <div id="alertList" class="alert-list"></div>
+        <div id="alertBadge" class="badge" hidden></div>
+      </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="tabbar">
+      <button class="tab is-active" data-view="dashboard">
+        <span>📊</span>ဒက်ရှ်ဘုတ်
+      </button>
+      <button class="tab" data-view="collect"><span>📝</span>ဈေးနှုန်း</button>
+      <button class="tab" data-view="forecast"><span>🤖</span>ခန့်မှန်း</button>
+      <button class="tab" data-view="alerts">
+        <span>🔔</span>သတိပေး
+      </button>
+    </nav>
+  </div>
+
+  <!-- JavaScript Scripts (Relative Paths) -->
+  <script src="js/api.js"></script>
+  <script src="js/PriceLineChart.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- UI / Auth / Dynamic Logic Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const authAlert = document.getElementById('authAlert');
+      const goToRegister = document.getElementById('goToRegister');
+      const goToLogin = document.getElementById('goToLogin');
+      const logoutBtn = document.getElementById('logoutBtn');
+
+      // Alert message helper
+      function showAlert(msg, isSuccess = false) {
+        authAlert.textContent = msg;
+        authAlert.style.display = 'block';
+        if (isSuccess) {
+          authAlert.classList.add('success');
+        } else {
+          authAlert.classList.remove('success');
+        }
+      }
+
+      function hideAlert() {
+        authAlert.style.display = 'none';
+      }
+
+      // Check user session
+      const storedName = localStorage.getItem("userName");
+      if (localStorage.getItem("isLoggedIn") === "true") {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').removeAttribute('hidden');
+        if (storedName) {
+          document.getElementById('userName').textContent = storedName;
+        }
+      }
+
+      // Toggle Auth Forms
+      goToRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        hideAlert();
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+      });
+
+      goToLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        hideAlert();
+        registerForm.style.display = 'none';
+        loginForm.style.display = 'block';
+      });
+
+      // Login Handler
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const phone = document.getElementById('phone').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, password })
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            localStorage.setItem("isLoggedIn", "true");
+            if (result.name) {
+              localStorage.setItem("userName", result.name);
+              document.getElementById('userName').textContent = result.name;
+            }
+
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('app').removeAttribute('hidden');
+          } else {
+            showAlert(result.error || "ဖုန်းနံပါတ် သို့မဟုတ် စကားဝှက် မှားယွင်းနေပါသည်။");
+          }
+        } catch (error) {
+          console.error("Error connecting to server:", error);
+          showAlert("ဆာဗာသို့ ချိတ်ဆက်၍ မရပါ။ လိုင်းစစ်ပေးပါ။");
+        }
+      });
+
+      // Register Handler
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const name = document.getElementById('reg_name').value;
+        const phone = document.getElementById('reg_phone').value;
+        const password = document.getElementById('reg_password').value;
+
+        try {
+          const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, phone, password })
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            showAlert("အကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။ ကျေးဇူးပြု၍ လော့ဂ်အင်ဝင်ပါ။", true);
+            registerForm.reset();
+            setTimeout(() => {
+              registerForm.style.display = 'none';
+              loginForm.style.display = 'block';
+              hideAlert();
+            }, 2000);
+          } else {
+            showAlert(result.error || "အကောင့်ဖွင့်ခြင်း မအောင်မြင်ပါ။");
+          }
+        } catch (error) {
+          console.error("Error registering user:", error);
+          showAlert("ဆာဗာသို့ ချိတ်ဆက်၍ မရပါ။ လိုင်းစစ်ပေးပါ။");
+        }
+      });
+
+      // Logout Handler
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userName");
+        document.getElementById('app').setAttribute('hidden', 'true');
+        document.getElementById('loginScreen').style.display = 'block';
+        loginForm.reset();
+        registerForm.reset();
+      });
+    });
+  </script>
+</body>
+
+</html>

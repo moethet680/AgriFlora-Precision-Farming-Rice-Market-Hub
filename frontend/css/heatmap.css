@@ -1,0 +1,123 @@
+:root {
+    --bg-color: #ffffff;
+    /* iframe ထဲရောက်ရင် နောက်ခံအဖြူပဲ ထားတာ ပိုကြည့်ကောင်းပါတယ် */
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    /* Heat Map Color Levels */
+    --level-1: #b0c4de;
+    --level-2: #9cb3c9;
+    --level-3: #87a3b3;
+    --level-4: #668f80;
+    --level-5: #477a63;
+    --level-6: #1f5239;
+}
+
+body {
+    font-family: 'Padauk', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 5px;
+    /* Margin/Padding ကို လျှော့ချလိုက်ပါသည် */
+    box-sizing: border-box;
+    overflow-x: hidden;
+    /* ဘေးတိုက် scrollbar မပေါ်စေရန် */
+}
+
+.heatmap-container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 10px;
+    /* Padding လျှော့ထားပါသည် */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.heatmap-header h2 {
+    font-size: 16px;
+    /* ခေါင်းစဉ် စာလုံးအရွယ်အစား လျှော့ထားပါသည် */
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 4px 0;
+}
+
+.heatmap-header p {
+    font-size: 12px;
+    color: #666666;
+    margin: 0 0 10px 0;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    /* ဖုန်းမျက်နှာပြင်ဆိုရင်မှ သာမန်အတိုင်း Scroll လုပ်လို့ရအောင် */
+}
+
+.heatmap-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 6px 5px;
+    /* အကွာအဝေးကို 12px 10px မှ 6px 5px သို့ လျှော့လိုက်ပါသည် */
+    text-align: center;
+    table-layout: fixed;
+    /* ကွက်များ ညီညီညာညာ မျှသွားစေရန် */
+}
+
+.heatmap-table th {
+    font-size: 12px;
+    font-weight: bold;
+    color: #555555;
+    padding-bottom: 4px;
+}
+
+.region-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-color);
+    text-align: left;
+    width: 70px;
+    /* Width ကို ပုံသေထားပြီး နေရာမစားအောင် ညှိလိုက်ပါသည် */
+    padding-right: 5px;
+    white-space: nowrap;
+}
+
+.heatmap-cell {
+    color: #222222;
+    font-size: 12px;
+    /* စာလုံးအရွယ်အစားကို ညှိထားပါသည် */
+    font-weight: bold;
+    padding: 8px 0;
+    /* Padding ကို 18px မှ 8px သို့ လျှော့လိုက်ပါသည် */
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+/* ဈေးနှုန်းအလိုက် အရောင်ခွဲခြားခြင်းတန်ဖိုးများ */
+.bg-lvl-1 {
+    background-color: var(--level-1);
+}
+
+.bg-lvl-2 {
+    background-color: var(--level-2);
+}
+
+.bg-lvl-3 {
+    background-color: var(--level-3);
+}
+
+.bg-lvl-4 {
+    background-color: var(--level-4);
+}
+
+.bg-lvl-5 {
+    background-color: var(--level-5);
+}
+
+.bg-lvl-6 {
+    background-color: var(--level-6);
+    color: #ffffff;
+}

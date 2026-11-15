@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="my">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ဆန်အမျိုးအစားများ - RICE MARKET</title>
+    <link rel="stylesheet" href="../css/rice-variety.css">
+</head>
+
+<body>
+
+    <div class="mobile-container">
+
+        <!-- Header -->
+        <header class="app-header">
+            <button class="menu-btn">☰</button>
+            <div class="logo-area">
+                <span style="font-size: 18px;">🌾</span>
+                <span class="app-title">RICE MARKET</span>
+            </div>
+            <button class="notif-btn">🔔</button>
+        </header>
+
+        <!-- Main Content (Scrollable) -->
+        <main class="app-content">
+            <h2 class="page-title">ဆန်အမျိုးအစားများ</h2>
+            <div class="divider">❖❖❖</div>
+
+            <!-- Dynamic Rice Card Grid -->
+            <div class="rice-card-grid" id="riceCardGrid">
+                <p style="text-align: center; grid-column: 1/-1; color: #64748b;">ဒေတာများကို ရယူနေပါသည်...</p>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_URL = 'http://127.0.0.1:5000/api/rice-varieties';
+            const gridContainer = document.getElementById('riceCardGrid');
+
+            fetch(API_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Server status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let items = [];
+                    if (Array.isArray(data)) {
+                        items = data;
+                    } else if (typeof data === 'object' && data !== null) {
+                        items = Object.values(data);
+                    }
+
+                    if (items.length === 0) {
+                        gridContainer.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #64748b; padding: 20px;">ဆန်အမျိုးအစားများ မရှိသေးပါ။</p>';
+                        return;
+                    }
+
+                    gridContainer.innerHTML = '';
+
+                    items.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'rice-card';
+                        card.style.cursor = 'pointer';
+
+                        card.onclick = () => {
+                            window.location.href = `detail.html?id=${item.id}`;
+                        };
+
+                        // ဒုတိယပုံအတိုင်း သပ်ရပ်လှပသော Rounded Button Design
+                        card.innerHTML = `
+                        <div class="rice-card-body" style="text-align: center; padding: 4px;">
+                            <img src="${item.image || '../images/Pawsan.jpg'}" alt="${item.name || ''}" style="width: 100%; height: 85px; object-fit: cover; border-radius: 10px;" onerror="this.src='../images/Pawsan.jpg';">
+                            <h4 style="margin: 5px 0 4px 0; font-size: 12px; font-weight: bold; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name || 'ဆန်အမည်'}</h4>
+                            <div style="background-color: #22c55e; color: white; padding: 4px 2px; border-radius: 12px; font-size: 10.5px; font-weight: 500; white-space: nowrap;">
+                                အသေးစိတ်ကြည့်မည်
+                            </div>
+                        </div>
+                    `;
+                        gridContainer.appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    console.error('API Fetch Error Detail:', error);
+                    gridContainer.innerHTML = `
+                    <p style="text-align: center; grid-column: 1/-1; color: #ef4444; font-weight: bold; padding: 20px;">
+                        Backend API နှင့် ချိတ်ဆက်၍ မရပါ!
+                    </p>
+                `;
+                });
+        });
+    </script>
+</body>
+
+</html>
